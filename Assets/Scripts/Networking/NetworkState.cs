@@ -1,0 +1,43 @@
+using Unity.Netcode;
+using UnityEngine;
+
+namespace Character
+{
+    public class NetworkState : MonoBehaviour
+    {
+        // Creates GUI for the network buttons
+        void OnGUI()
+        {
+            GUILayout.BeginArea(new Rect(500, 10, 300, 300));
+            if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
+            {
+                StartButtons();
+            }
+            else
+            {
+                StatusLabels();
+            }
+
+            GUILayout.EndArea();
+        }
+
+        // Implements functionality for buttons
+        static void StartButtons()
+        {
+            if (GUILayout.Button("Host")) NetworkManager.Singleton.StartHost();
+            if (GUILayout.Button("Client")) NetworkManager.Singleton.StartClient();
+            if (GUILayout.Button("Server")) NetworkManager.Singleton.StartServer();
+        }
+
+        static void StatusLabels()
+        {
+            var mode = NetworkManager.Singleton.IsHost ?
+                "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client";
+
+            GUILayout.Label("Transport: " +
+                NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
+            GUILayout.Label("Mode: " + mode);
+        }
+
+    }
+}
