@@ -36,9 +36,13 @@ public class Player : MonoBehaviour
 
     }
 
+    // Checks for collisions with the pickups and endzone
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("I have collided with something");
+        // In the case of a pickup then 100 is added to this player's score
+        // which is updated in the UI and the pickup is removed so that it
+        // can't be collected again
         if (other.gameObject.tag == "Pickup")
         {
            
@@ -49,6 +53,10 @@ public class Player : MonoBehaviour
             pickup.gameObject.SetActive(false);
 
             Debug.Log("The current player score is:" + _playerScore);
+        }
+        else if (other.gameObject.tag == "EndZone")
+        {
+            other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore);
         }
     }
 }
