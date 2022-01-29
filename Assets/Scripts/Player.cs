@@ -14,12 +14,18 @@ namespace Character
 
         private float _speed = 6.0f;
         private int _playerScore;
-        private bool _spawnSet = false;
+        
+        // This bool is implemented so that each player prefab that's spawned in can be
+        // controlled seperately
+        private bool _canMove = false;
 
+        [SerializeField]
         private Vector3 _direction, _velocity;
 
         // Create a Network Variable for position that it can be later read or updated on the server
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+
+        
         
         // Replace Start() function with an override for the Netcode OnNetworkSpawn() method
         // which is called when the NetworkObject component attached to the Player is spawned in
@@ -32,6 +38,7 @@ namespace Character
 
             if (IsOwner)
             {
+                Debug.Log("I am the owner");
                 SpawnPoint();
             }
         }
@@ -41,29 +48,44 @@ namespace Character
         {
             if (NetworkManager.Singleton.IsServer)
             {
+                Debug.Log("IsServer check");
                 Position.Value = GameObject.Find("SpawnPoint1").transform.position;
                 transform.position = Position.Value;
+                _canMove = true;
             }
             else
             {
+                transform.position = GameObject.Find("SpawnPoint2").transform.position;
+                Debug.Log("Is not a server check");
                 PosRequestServerRpc();
                 StartCoroutine(InitialSpawnRoutine());
-                
+
+
             }
         }
 
         void Update()
         {
-            // Store reference to input axis
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
+            if (NetworkManager.Singleton.IsServer  && !NetworkManager.Singleton.IsClient)
+            {
+                UpdateServer();
+                
+            }
+            if (NetworkManager.Singleton.IsClient && IsOwner)
+            {
+                if (_canMove == true)
+                {
+                    UpdateClient();
+                }
+                
+            }
 
-            // Implementing speed and direction to the movement before calling
-            // the controller Move function
-            _direction = new Vector3(horizontalInput, 0, verticalInput);
-            _velocity = _direction * _speed;
-            _controller.Move(_velocity * Time.deltaTime);
-
+        }
+        
+        private void UpdateServer()
+        {
+            transform.position = Position.Value;
+           
         }
 
         // Checks for collisions with the pickups and endzone
@@ -94,6 +116,7 @@ namespace Character
         {
             yield return new WaitForSeconds(0.1f);
             transform.position = Position.Value;
+            _canMove = true;
         }
 
         // Updates the Server's instance of the player's position to the 2nd spawn point
@@ -104,6 +127,36 @@ namespace Character
             Position.Value = GameObject.Find("SpawnPoint2").transform.position;
             transform.position = Position.Value;
 
+        }
+
+        [ServerRpc]
+        private void UpdateMovementServerRpc()
+        {
+            Position.Value = transform.position;
+        }
+
+        private void UpdateClient()
+        {
+
+                Vector3 oldPos = transform.position;
+
+                // Store reference to input axis
+                float horizontalInput = Input.GetAxis("Horizontal");
+                float verticalInput = Input.GetAxis("Vertical");
+
+                // Implementing speed and direction to the movement before calling
+                // the controller Move function
+                _direction = new Vector3(horizontalInput, 0, verticalInput);
+                _velocity = _direction * _speed;
+                _controller.Move(_velocity * Time.deltaTime);
+                
+            if (oldPos != transform.position)
+            {
+                UpdateMovementServerRpc();
+            }
+                    
+                
+                   
         }
     }
 }
