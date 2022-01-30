@@ -9,15 +9,14 @@ namespace Character
     {
         [SerializeField]
         private CharacterController _controller;
-        [SerializeField]
-        private UIManager _uiManager;
 
         private float _speed = 6.0f;
+
+        // Creating two separate instance of player score to store and send info to the ScoreManager
         private int _playerScore;
+        private int _playerScore2;
         
-        // This bool is implemented so that each player prefab that's spawned in can be
-        // controlled seperately
-        private bool _canMove = false;
+        public bool _isPlayer2 = false;
 
         [SerializeField]
         private Vector3 _direction, _velocity;
@@ -25,17 +24,10 @@ namespace Character
         // Create a Network Variable for position that it can be later read or updated on the server
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
 
-        
-        
         // Replace Start() function with an override for the Netcode OnNetworkSpawn() method
         // which is called when the NetworkObject component attached to the Player is spawned in
         public override void OnNetworkSpawn()
         {
-            if (GameObject.Find("GUI").GetComponent<UIManager>() != null)
-            {
-                _uiManager = GameObject.Find("GUI").GetComponent<UIManager>();
-            }
-
             if (IsOwner)
             {
                 Debug.Log("I am the owner");
@@ -51,10 +43,10 @@ namespace Character
                 Debug.Log("IsServer check");
                 Position.Value = GameObject.Find("SpawnPoint1").transform.position;
                 transform.position = Position.Value;
-                _canMove = true;
             }
             else
             {
+                _isPlayer2 = true;
                 transform.position = GameObject.Find("SpawnPoint2").transform.position;
                 Debug.Log("Is not a server check");
                 PosRequestServerRpc();
@@ -66,26 +58,34 @@ namespace Character
 
         void Update()
         {
-            if (NetworkManager.Singleton.IsServer  && !NetworkManager.Singleton.IsClient)
-            {
-                UpdateServer();
-                
-            }
             if (NetworkManager.Singleton.IsClient && IsOwner)
-            {
-                if (_canMove == true)
-                {
-                    UpdateClient();
-                }
-                
+            {             
+                    UpdateClient();              
             }
 
         }
-        
-        private void UpdateServer()
+
+        // Calls the ServerRpc methods in ScoreManager in order to assign the updated score to
+        // the networked variables
+        private void UpdateScoreManager()
         {
-            transform.position = Position.Value;
-           
+            ScoreManager.Instance.UpdateScore1ServerRpc(_playerScore);
+            ScoreManager.Instance.UpdateScore2ServerRpc(_playerScore2);
+        }
+
+        // Adds on the score to local player score variables based on the value defined in Pickup
+        private void UpdateClientScore(Pickup pickup)
+        {
+            if (_isPlayer2 == false)
+            {
+                _playerScore += pickup.GetPickedUp();                
+                UpdateScoreManager();
+            }
+            else
+            {
+                _playerScore2 += pickup.GetPickedUp();
+                UpdateScoreManager();
+            }
         }
 
         // Checks for collisions with the pickups and endzone
@@ -99,11 +99,19 @@ namespace Character
 
                 Pickup pickup = other.gameObject.GetComponent<Pickup>();
 
-                _playerScore += pickup.GetPickedUp();
-                _uiManager.UpdateScoreText(_playerScore);
+                if (NetworkManager.Singleton.IsClient && IsOwner)
+                {
+                    // Store the networked variables of both player scores from the ScoreManager
+                    // into local variables
+                    _playerScore = ScoreManager.Instance.P1Score;
+                    _playerScore2 = ScoreManager.Instance.P2Score;
+                    UpdateClientScore(pickup);
+                }
+
                 pickup.gameObject.SetActive(false);
 
-                Debug.Log("The current player score is:" + _playerScore);
+                Debug.Log("The current player1 score is:" + _playerScore);
+                Debug.Log("The current player2 score is:" + _playerScore2);
             }
             else if (other.gameObject.tag == "EndZone")
             {
@@ -116,7 +124,7 @@ namespace Character
         {
             yield return new WaitForSeconds(0.1f);
             transform.position = Position.Value;
-            _canMove = true;
+            
         }
 
         // Updates the Server's instance of the player's position to the 2nd spawn point
@@ -137,26 +145,22 @@ namespace Character
 
         private void UpdateClient()
         {
+            Vector3 oldPos = transform.position;
 
-                Vector3 oldPos = transform.position;
+            // Store reference to input axis
+            float horizontalInput = Input.GetAxis("Horizontal");
+            float verticalInput = Input.GetAxis("Vertical");
 
-                // Store reference to input axis
-                float horizontalInput = Input.GetAxis("Horizontal");
-                float verticalInput = Input.GetAxis("Vertical");
-
-                // Implementing speed and direction to the movement before calling
-                // the controller Move function
-                _direction = new Vector3(horizontalInput, 0, verticalInput);
-                _velocity = _direction * _speed;
-                _controller.Move(_velocity * Time.deltaTime);
+            // Implementing speed and direction to the movement before calling
+            // the controller Move function
+            _direction = new Vector3(horizontalInput, 0, verticalInput);
+            _velocity = _direction * _speed;
+            _controller.Move(_velocity * Time.deltaTime);
                 
             if (oldPos != transform.position)
             {
                 UpdateMovementServerRpc();
-            }
-                    
-                
-                   
+            }                                    
         }
     }
 }
