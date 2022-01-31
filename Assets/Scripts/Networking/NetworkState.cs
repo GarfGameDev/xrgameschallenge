@@ -7,7 +7,6 @@ namespace Character
 {
     public class NetworkState : NetworkBehaviour
     {
-        private string _textString = "Enter Code";
         [SerializeField]
         private Button _startButton, _joinButton;
 

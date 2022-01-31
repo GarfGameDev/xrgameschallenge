@@ -13,7 +13,7 @@ public class ScoreManager : NetworkBehaviour
         {
             if (_instance == null)
             {
-                Debug.LogError("The ScoreManager is null");
+                return null;
             }
             return _instance;
         }
