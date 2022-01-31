@@ -59,12 +59,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.netcode.adapter.utp": {
-      "version": "1.0.0-pre.3",
+      "version": "1.0.0-pre.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.netcode.gameobjects": "1.0.0-pre.3",
-        "com.unity.transport": "1.0.0-pre.7"
+        "com.unity.netcode.gameobjects": "1.0.0-pre.4",
+        "com.unity.transport": "1.0.0-pre.10"
       },
       "url": "https://packages.unity.com"
     },

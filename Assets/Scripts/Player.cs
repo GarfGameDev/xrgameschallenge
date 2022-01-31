@@ -52,7 +52,7 @@ namespace Character
                 transform.position = GameObject.Find("SpawnPoint2").transform.position;
                 Debug.Log("Is not a server check");
                 PosRequestServerRpc();
-                StartCoroutine(InitialSpawnRoutine());
+                //StartCoroutine(InitialSpawnRoutine());
 
 
             }

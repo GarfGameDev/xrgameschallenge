@@ -335,7 +335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scoreTextP1: {fileID: 1308059420}
   _scoreTextP2: {fileID: 1386732260}
-  _playerReadyText: {fileID: 0}
+  _playerReadyText: {fileID: 1653104360}
   _restartButton: {fileID: 1314009331}
   _endScreen: {fileID: 335986282}
   PlayersReady:

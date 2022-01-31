@@ -44,9 +44,12 @@ public class UIManager : NetworkBehaviour
         {
             if (_restartButton != null)
             {               
-                _restartButton.onClick.AddListener(() => UpdatePlayerReadyServerRpc());
-                _restartButton.gameObject.SetActive(false);
-                _playerReadyText.gameObject.SetActive(true);
+                _restartButton.onClick.AddListener(() =>
+                {
+                    UpdatePlayerReadyServerRpc();
+                    _restartButton.gameObject.SetActive(false);
+                    _playerReadyText.gameObject.SetActive(true);
+                });
             }
         }
         
