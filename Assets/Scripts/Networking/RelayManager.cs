@@ -17,6 +17,7 @@ public class RelayManager : MonoBehaviour
 
     [SerializeField]
     private int _maxConnects = 2;
+    private string _joinCode;
 
     public UnityTransport relayTransport;
     
@@ -30,15 +31,24 @@ public class RelayManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                Debug.LogError("The ScoreManager is null");
+                Debug.LogError("The RelayManager is null");
             }
             return _instance;
+        }
+    }
+
+    public string JoinCode
+    {
+        get
+        {
+            return _joinCode;
         }
     }
 
     private void Awake()
     {
         _instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
 
     public async Task<RelayHostData> HostGame()
@@ -69,7 +79,7 @@ public class RelayManager : MonoBehaviour
 
         //Retrieve the Relay join code for our clients to join our party
         data.JoinCode = await Relay.Instance.GetJoinCodeAsync(data.AllocationID);
-
+        _joinCode = data.JoinCode;
         Debug.Log("Your Join code is: " + data.JoinCode);
 
         relayTransport.SetRelayServerData(data.IPv4Address, data.Port, data.AllocationIDBytes, data.Key, data.ConnectionData);
