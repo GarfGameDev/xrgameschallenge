@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 namespace Character
 {
@@ -20,6 +21,7 @@ namespace Character
 
         [SerializeField]
         private Vector3 _direction, _velocity;
+
 
         // Create a Network Variable for position that it can be later read or updated on the server
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
@@ -62,6 +64,8 @@ namespace Character
             {             
                     UpdateClient();              
             }
+
+
 
         }
 

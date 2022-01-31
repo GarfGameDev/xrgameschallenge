@@ -30,6 +30,7 @@ public class UIManager : NetworkBehaviour
                 if (PlayersReady.Value > 0)
                 {
                     _endScreen.gameObject.SetActive(false);
+                    
                     NetworkManager.SceneManager.LoadScene("Main", 0);
                 }
                 
@@ -72,15 +73,5 @@ public class UIManager : NetworkBehaviour
     public void GameOver()
     {
         UpdateClientWinServerRpc();
-       // NetworkManager.SceneManager.LoadScene("EndScreen", 0);
-
-/*        if (ScoreManager.Instance.P1Score > 400)
-        {
-            _endScreen.GetComponentInChildren<TextMeshProUGUI>().text = "PLAYER 1 WINS!";
-        }
-        else if (ScoreManager.Instance.P2Score > 400)
-        {
-            _endScreen.GetComponentInChildren<TextMeshProUGUI>().text = "PLAYER 2 WINS!";
-        }*/
     }
 }

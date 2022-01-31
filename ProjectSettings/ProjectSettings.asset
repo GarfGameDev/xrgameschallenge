@@ -687,7 +687,14 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Analytics: 0
+    Build: 0
+    Collab: 0
+    Game Performance: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 1
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -701,11 +708,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 3
   activeInputHandler: 0
-  cloudProjectId: 
+  cloudProjectId: 3ba26cd8-2c0b-4239-a79f-35b63d8bbe14
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: XR Challenge
+  organizationId: garfinator
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 1
   virtualTexturingSupportEnabled: 0
