@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace Character
 {
-    public class NetworkState : MonoBehaviour
+    public class NetworkState : NetworkBehaviour
     {
         private string _textString = "Enter Code";
         [SerializeField]
@@ -17,9 +17,11 @@ namespace Character
         { 
 
             _startButton.onClick.AddListener(() => NetworkManager.Singleton.StartHost());
-            
-            
+            _startButton.onClick.AddListener(() => NetworkManager.SceneManager.LoadScene("Main", 0));
+
+
             _joinButton.onClick.AddListener(() => NetworkManager.Singleton.StartClient());
+            _joinButton.onClick.AddListener(() => NetworkManager.SceneManager.LoadScene("Main", 0));
         }
 
 

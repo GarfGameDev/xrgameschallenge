@@ -115,7 +115,15 @@ namespace Character
             }
             else if (other.gameObject.tag == "EndZone")
             {
-                other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore);
+                if (_isPlayer2 == false)
+                {
+                    other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore);
+                }
+                else
+                {
+                    other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore2);
+                }
+                
             }
         }
 
