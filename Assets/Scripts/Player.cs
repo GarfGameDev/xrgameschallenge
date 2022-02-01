@@ -49,10 +49,8 @@ namespace Character
             else
             {
                 _isPlayer2 = true;
-                transform.position = GameObject.Find("SpawnPoint2").transform.position;
                 Debug.Log("Is not a server check");
                 PosRequestServerRpc();
-                //StartCoroutine(InitialSpawnRoutine());
 
 
             }

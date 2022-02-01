@@ -17,6 +17,14 @@ public class RelayManager : MonoBehaviour
 
     [SerializeField]
     private int _maxConnects = 2;
+
+    public int MaxConnects
+    {
+        get
+        {
+            return _maxConnects;
+        }
+    }
     private string _joinCode;
 
     public UnityTransport relayTransport;
