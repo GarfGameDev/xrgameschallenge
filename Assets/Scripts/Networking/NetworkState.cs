@@ -12,11 +12,11 @@ namespace Character
 
         [SerializeField]
         private InputField _joinCodeInput;
-        // Creates GUI for the network buttons
 
         // Implements functionality for buttons
         private void Start()
-        { 
+        {
+
 
             _startButton.onClick.AddListener(async() =>
             {

@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class UIManager : NetworkBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI _scoreTextP1, _scoreTextP2, _playerReadyText;
+    private TextMeshProUGUI _scoreTextP1, _scoreTextP2, _playerReadyText, _player2ReadyText;
 
     [SerializeField]
     private Button _restartButton;
@@ -19,6 +19,7 @@ public class UIManager : NetworkBehaviour
 
     public NetworkVariable<int> PlayersReady = new NetworkVariable<int>();
     public NetworkVariable<int> ClientWin = new NetworkVariable<int>();
+    public NetworkVariable<int> SinglePlayer = new NetworkVariable<int>();
 
     private void Start()
     {
@@ -28,10 +29,9 @@ public class UIManager : NetworkBehaviour
             {
                 _restartButton.onClick.AddListener(() =>
                 {
-                    if (PlayersReady.Value > 0)
+                    if (PlayersReady.Value > 0 || RelayManager.Instance.Player2Connect == 0)
                     {
                         _endScreen.gameObject.SetActive(false);
-
                         NetworkManager.SceneManager.LoadScene("Main", 0);
                     }
 
@@ -48,7 +48,7 @@ public class UIManager : NetworkBehaviour
                 {
                     UpdatePlayerReadyServerRpc();
                     _restartButton.gameObject.SetActive(false);
-                    _playerReadyText.gameObject.SetActive(true);
+                    _player2ReadyText.gameObject.SetActive(true);
                 });
             }
         }
@@ -66,6 +66,12 @@ public class UIManager : NetworkBehaviour
     {
         ClientWin.Value = 1;
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UpdateSinglePlayerServerRpc()
+    {
+        SinglePlayer.Value = 1;
+    }
     // Accesses Score properties from ScoreManager in order to get the current networked scores
     private void Update()
     {
@@ -73,6 +79,11 @@ public class UIManager : NetworkBehaviour
         {
             _scoreTextP1.text = "SCORE: " + ScoreManager.Instance.P1Score.ToString();
             _scoreTextP2.text = "SCORE: " + ScoreManager.Instance.P2Score.ToString();
+        }
+
+        if (PlayersReady.Value > 0)
+        {
+            _playerReadyText.gameObject.SetActive(true);
         }
 
 
@@ -86,6 +97,11 @@ public class UIManager : NetworkBehaviour
     }
 
     public void GameOver()
+    {
+        UpdateClientWinServerRpc();
+    }
+
+    public void SinglePlayerGameOver()
     {
         UpdateClientWinServerRpc();
     }

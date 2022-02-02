@@ -10,6 +10,8 @@ namespace Character
     {
         [SerializeField]
         private CharacterController _controller;
+        [SerializeField]
+        private Animator _animator;
 
         private float _speed = 6.0f;
 
@@ -22,9 +24,17 @@ namespace Character
         [SerializeField]
         private Vector3 _direction, _velocity;
 
+        public enum playerAnimState
+        {
+            Idle,
+            Run,
+        }
+
 
         // Create a Network Variable for position that it can be later read or updated on the server
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+        public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
+        public NetworkVariable<playerAnimState> Animstate = new NetworkVariable<playerAnimState>();
 
         // Replace Start() function with an override for the Netcode OnNetworkSpawn() method
         // which is called when the NetworkObject component attached to the Player is spawned in
@@ -32,7 +42,6 @@ namespace Character
         {
             if (IsOwner)
             {
-                Debug.Log("I am the owner");
                 SpawnPoint();
             }
         }
@@ -42,14 +51,12 @@ namespace Character
         {
             if (NetworkManager.Singleton.IsServer)
             {
-                Debug.Log("IsServer check");
                 Position.Value = GameObject.Find("SpawnPoint1").transform.position;
                 transform.position = Position.Value;
             }
             else
             {
                 _isPlayer2 = true;
-                Debug.Log("Is not a server check");
                 PosRequestServerRpc();
 
 
@@ -63,7 +70,14 @@ namespace Character
                     UpdateClient();              
             }
 
-
+            if (Animstate.Value == playerAnimState.Run)
+            {
+                _animator.SetFloat("Run", 1);
+            }
+            else
+            {
+                _animator.SetFloat("Run", 0);
+            }
 
         }
 
@@ -119,11 +133,21 @@ namespace Character
             {
                 if (_isPlayer2 == false)
                 {
-                    other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore);
+                    other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore);                 
+                    if (_playerScore > 400)
+                    {
+                        _playerScore = 0;
+                        _playerScore2 = 0;
+                    }
                 }
-                else
+                else if (_isPlayer2 == true)
                 {
                     other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore2);
+                    if (_playerScore2 > 400)
+                    {
+                        _playerScore = 0;
+                        _playerScore2 = 0;
+                    }
                 }
                 
             }
@@ -151,15 +175,26 @@ namespace Character
         private void UpdateMovementServerRpc()
         {
             Position.Value = transform.position;
+            Rotation.Value = transform.rotation;
+        }
+
+        [ServerRpc]
+        private void UpdatePlayerStateServerRpc(playerAnimState state)
+        {
+            Animstate.Value = state;
         }
 
         private void UpdateClient()
         {
             Vector3 oldPos = transform.position;
+            //Quaternion oldRot = transform.rotation;
+            transform.rotation = Rotation.Value;
+             
 
             // Store reference to input axis
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");
+
 
             // Implementing speed and direction to the movement before calling
             // the controller Move function
@@ -169,8 +204,22 @@ namespace Character
                 
             if (oldPos != transform.position)
             {
+                transform.rotation = Quaternion.LookRotation(_direction);
                 UpdateMovementServerRpc();
-            }                                    
+            }             
+            
+            if (verticalInput > 0 || horizontalInput > 0)
+            {
+                UpdatePlayerStateServerRpc(playerAnimState.Run);
+            }
+            else if (verticalInput < 0 || horizontalInput < 0)
+            {
+                UpdatePlayerStateServerRpc(playerAnimState.Run);
+            }
+            else
+            {
+                UpdatePlayerStateServerRpc(playerAnimState.Idle);
+            }
         }
     }
 }

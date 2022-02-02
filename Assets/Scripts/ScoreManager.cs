@@ -48,14 +48,12 @@ public class ScoreManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void UpdateScore1ServerRpc(int score)
     {
-        Debug.Log("Check3");
         P1ScoreText.Value = score;
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void UpdateScore2ServerRpc(int score)
     {
-        Debug.Log("Check3");
         P2ScoreText.Value = score;
     }
 

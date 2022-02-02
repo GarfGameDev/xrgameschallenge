@@ -23,7 +23,7 @@ public class SpawnManager : NetworkBehaviour
     {
         _joinCodeText.text = "JOIN CODE: " + RelayManager.Instance.JoinCode;
 
-        for (int i = 0; i < _pickupArray.Length; i++)
+/*        for (int i = 0; i < _pickupArray.Length; i++)
         {
             _pickupArray[i].SetActive(false);
         }
@@ -31,10 +31,10 @@ public class SpawnManager : NetworkBehaviour
         if (NetworkManager.Singleton.IsServer)
         {
             NumOfLoops.Value = 0;
-        }
+        }*/
         
 
-        StartCoroutine(StartPickupSpawnRoutine());
+        //StartCoroutine(StartPickupSpawnRoutine());
         
         
 

@@ -10,8 +10,18 @@ using Unity.Services.Core.Environments;
 using Unity.Services.Authentication;
 using System;
 
-public class RelayManager : MonoBehaviour
+public class RelayManager : NetworkBehaviour
 {
+    private NetworkVariable<int> Player2Connected = new NetworkVariable<int>();
+
+    public int Player2Connect
+    {
+        get
+        {
+            return Player2Connected.Value;
+        }
+    }
+
     [SerializeField]
     private string _environment = "production";
 
@@ -57,6 +67,14 @@ public class RelayManager : MonoBehaviour
     {
         _instance = this;
         DontDestroyOnLoad(this.gameObject);
+
+        NetworkManager.Singleton.OnClientConnectedCallback += (id) =>
+        {
+            if (NetworkManager.IsServer)
+            {
+                Player2Connected.Value = 1;
+            }
+        };
     }
 
     public async Task<RelayHostData> HostGame()
@@ -124,5 +142,11 @@ public class RelayManager : MonoBehaviour
         relayTransport.SetRelayServerData(joinData.IPv4Address, joinData.Port, joinData.AllocationIDBytes, joinData.Key, joinData.ConnectionData, joinData.HostConnectionData);
 
         return joinData;
-    }    
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdatePlayerConnectedServerRpc()
+    {
+        Player2Connected.Value = 1;
+    }
 }
