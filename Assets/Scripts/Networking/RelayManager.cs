@@ -12,13 +12,13 @@ using System;
 
 public class RelayManager : NetworkBehaviour
 {
-    private NetworkVariable<int> Player2Connected = new NetworkVariable<int>();
+    private NetworkVariable<int> PlayerConnected = new NetworkVariable<int>();
 
     public int Player2Connect
     {
         get
         {
-            return Player2Connected.Value;
+            return PlayerConnected.Value;
         }
     }
 
@@ -26,7 +26,7 @@ public class RelayManager : NetworkBehaviour
     private string _environment = "production";
 
     [SerializeField]
-    private int _maxConnects = 2;
+    private int _maxConnects = 1;
 
     public int MaxConnects
     {
@@ -68,15 +68,27 @@ public class RelayManager : NetworkBehaviour
         _instance = this;
         DontDestroyOnLoad(this.gameObject);
 
+
+    }
+
+    private void Start()
+    {
         NetworkManager.Singleton.OnClientConnectedCallback += (id) =>
         {
             if (NetworkManager.IsServer)
             {
-                Player2Connected.Value = 1;
+                PlayerConnected.Value++;
+            }
+        };
+
+        NetworkManager.Singleton.OnClientDisconnectCallback+= (id) =>
+        {
+            if (NetworkManager.IsServer)
+            {
+                PlayerConnected.Value--;
             }
         };
     }
-
     public async Task<RelayHostData> HostGame()
     {
         InitializationOptions options = new InitializationOptions().SetEnvironmentName(_environment);
@@ -106,7 +118,7 @@ public class RelayManager : NetworkBehaviour
         // Retrieve the Relay join code for our clients to join our party
         data.JoinCode = await Relay.Instance.GetJoinCodeAsync(data.AllocationID);
         _joinCode = data.JoinCode;
-        Debug.Log("Your Join code is: " + data.JoinCode);
+       
 
         relayTransport.SetRelayServerData(data.IPv4Address, data.Port, data.AllocationIDBytes, data.Key, data.ConnectionData);
 
@@ -142,11 +154,5 @@ public class RelayManager : NetworkBehaviour
         relayTransport.SetRelayServerData(joinData.IPv4Address, joinData.Port, joinData.AllocationIDBytes, joinData.Key, joinData.ConnectionData, joinData.HostConnectionData);
 
         return joinData;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdatePlayerConnectedServerRpc()
-    {
-        Player2Connected.Value = 1;
     }
 }

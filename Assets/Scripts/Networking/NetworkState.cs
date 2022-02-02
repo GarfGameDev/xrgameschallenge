@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
 
 namespace Character
@@ -9,6 +10,9 @@ namespace Character
     {
         [SerializeField]
         private Button _startButton, _joinButton;
+
+        [SerializeField]
+        private TextMeshProUGUI _lobbyFullText;
 
         [SerializeField]
         private InputField _joinCodeInput;
@@ -39,8 +43,18 @@ namespace Character
                     await RelayManager.Instance.JoinRelay(_joinCodeInput.text);
                 }
 
-                NetworkManager.Singleton.StartClient();
-                NetworkManager.SceneManager.LoadScene("Main", 0);
+
+                    NetworkManager.Singleton.StartClient();
+                    if (RelayManager.Instance.Player2Connect < 2)
+                    {
+                        NetworkManager.SceneManager.LoadScene("Main", 0);
+                    }
+                    else
+                    {
+                        _lobbyFullText.gameObject.SetActive(true);
+                    }
+
+
 
 
                 });

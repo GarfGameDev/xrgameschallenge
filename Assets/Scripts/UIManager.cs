@@ -30,7 +30,7 @@ public class UIManager : NetworkBehaviour
             {
                 _restartButton.onClick.AddListener(() =>
                 {
-                    if (PlayersReady.Value > 0 || RelayManager.Instance.Player2Connect == 0)
+                    if (PlayersReady.Value > 0 || RelayManager.Instance.Player2Connect == 1)
                     {
                         _endScreen.gameObject.SetActive(false);
                         NetworkManager.SceneManager.LoadScene("Main", 0);

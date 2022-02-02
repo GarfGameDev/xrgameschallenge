@@ -100,7 +100,6 @@ MonoBehaviour:
   _isPlayer2: 0
   _direction: {x: 0, y: 0, z: 0}
   _velocity: {x: 0, y: 0, z: 0}
-  _rotation: {x: 0, y: 0, z: 0}
   Position:
     m_InternalValue: {x: 0, y: 0, z: 0}
   Rotation:
@@ -236,7 +235,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Avatar
       value: 
-      objectReference: {fileID: 9000000, guid: 0a5fb4a0ac1cf8a45998529e9ec243ce, type: 3}
+      objectReference: {fileID: 9000000, guid: da3f0e61509dffe46b3e6ab5ca9a815e, type: 3}
     - target: {fileID: 5866666021909216657, guid: da3f0e61509dffe46b3e6ab5ca9a815e,
         type: 3}
       propertyPath: m_Controller
