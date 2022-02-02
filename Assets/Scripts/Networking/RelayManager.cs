@@ -82,17 +82,17 @@ public class RelayManager : NetworkBehaviour
         InitializationOptions options = new InitializationOptions().SetEnvironmentName(_environment);
         //Initialize the Unity Services engine
         await UnityServices.InitializeAsync(options);
-        //Always autheticate your users beforehand
+        // Authenticates the user beforehand
         if (!AuthenticationService.Instance.IsSignedIn)
         {
-            //If not already logged, log the user in
+            // If not already logged, log the user in
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
 
-        //Ask Unity Services to allocate a Relay server
+        // Ask Unity Services to allocate a Relay server
         Allocation allocation = await Relay.Instance.CreateAllocationAsync(_maxConnects);
 
-        //Populate the hosting data
+        // Populate the hosting data
         RelayHostData data = new RelayHostData
         {
             Key = allocation.Key,
@@ -103,7 +103,7 @@ public class RelayManager : NetworkBehaviour
             IPv4Address = allocation.RelayServer.IpV4
         };
 
-        //Retrieve the Relay join code for our clients to join our party
+        // Retrieve the Relay join code for our clients to join our party
         data.JoinCode = await Relay.Instance.GetJoinCodeAsync(data.AllocationID);
         _joinCode = data.JoinCode;
         Debug.Log("Your Join code is: " + data.JoinCode);

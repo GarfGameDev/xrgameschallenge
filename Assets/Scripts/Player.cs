@@ -58,8 +58,6 @@ namespace Character
             {
                 _isPlayer2 = true;
                 PosRequestServerRpc();
-
-
             }
         }
 
@@ -126,11 +124,11 @@ namespace Character
 
                 pickup.gameObject.SetActive(false);
 
-                Debug.Log("The current player1 score is:" + _playerScore);
-                Debug.Log("The current player2 score is:" + _playerScore2);
             }
             else if (other.gameObject.tag == "EndZone")
             {
+                // Launches the check for game over status and stores 0 in the local score variables when it's a true condition
+                // to avoid the winning player from launching the game over after coming from the end screen
                 if (_isPlayer2 == false)
                 {
                     other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore);                 
@@ -151,14 +149,6 @@ namespace Character
                 }
                 
             }
-        }
-
-        // Implemented coroutine so that the initial spawn position updates client side
-        IEnumerator InitialSpawnRoutine()
-        {
-            yield return new WaitForSeconds(0.1f);
-            transform.position = Position.Value;
-            
         }
 
         // Updates the Server's instance of the player's position to the 2nd spawn point
@@ -187,10 +177,8 @@ namespace Character
         private void UpdateClient()
         {
             Vector3 oldPos = transform.position;
-            //Quaternion oldRot = transform.rotation;
             transform.rotation = Rotation.Value;
              
-
             // Store reference to input axis
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");
@@ -201,7 +189,9 @@ namespace Character
             _direction = new Vector3(horizontalInput, 0, verticalInput);
             _velocity = _direction * _speed;
             _controller.Move(_velocity * Time.deltaTime);
-                
+              
+            // Updates the network values for Position and Rotation and also changes local rotation value
+            // depending on the direction
             if (oldPos != transform.position)
             {
                 transform.rotation = Quaternion.LookRotation(_direction);

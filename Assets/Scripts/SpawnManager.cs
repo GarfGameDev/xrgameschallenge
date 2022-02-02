@@ -12,7 +12,6 @@ public class SpawnManager : NetworkBehaviour
     [SerializeField]
     private GameObject[] _pickupArray;
     private int[] _numberArray = new int[11];
-    private int _numOfLoops;
 
     private bool _alreadyActive = false;
 
@@ -21,9 +20,10 @@ public class SpawnManager : NetworkBehaviour
 
     void Start()
     {
+        // Displays a join code to give to the other player to use when you're the host
         _joinCodeText.text = "JOIN CODE: " + RelayManager.Instance.JoinCode;
 
-/*        for (int i = 0; i < _pickupArray.Length; i++)
+        for (int i = 0; i < _pickupArray.Length; i++)
         {
             _pickupArray[i].SetActive(false);
         }
@@ -31,26 +31,16 @@ public class SpawnManager : NetworkBehaviour
         if (NetworkManager.Singleton.IsServer)
         {
             NumOfLoops.Value = 0;
-        }*/
-        
+        }
 
-        //StartCoroutine(StartPickupSpawnRoutine());
-        
-        
 
-/*        NetworkManager.Singleton.OnClientConnectedCallback += (id) =>
-        {
-            
-            for (int i = 0; i < _pickupArray.Length; i++)
-            {
-                _pickupArray[i].SetActive(false);
-                _numberArray[i] = 0;
-            }
-        };*/
+        StartCoroutine(StartPickupSpawnRoutine());
+
 
     }
 
-
+    // This Coroutine handles the random spawning of the 10 collectibles in fixed positions once
+    // every 2 seconds
     IEnumerator StartPickupSpawnRoutine()
     {
         yield return new WaitForSeconds(1.0f);
@@ -67,7 +57,6 @@ public class SpawnManager : NetworkBehaviour
                 if (_numberArray[i] == RandomNumber.Value)
                 {
                     _alreadyActive = true;
-                    Debug.Log("This is true");
                 }
             }
             if (_alreadyActive == false)
@@ -84,7 +73,6 @@ public class SpawnManager : NetworkBehaviour
                 continue;
             }
 
-            Debug.Log("I've been called");
             yield return new WaitForSeconds(2.0f);
         }
     }

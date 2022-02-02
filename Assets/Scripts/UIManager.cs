@@ -15,7 +15,7 @@ public class UIManager : NetworkBehaviour
     private Button _restartButton;
 
     [SerializeField]
-    private GameObject  _endScreen;
+    private GameObject _endScreen;
 
     public NetworkVariable<int> PlayersReady = new NetworkVariable<int>();
     public NetworkVariable<int> ClientWin = new NetworkVariable<int>();
@@ -23,6 +23,7 @@ public class UIManager : NetworkBehaviour
 
     private void Start()
     {
+        // If the restart button is clicked server side the main scene will be launched when conditions are true
         if (NetworkManager.Singleton.IsServer)
         {
             if (_restartButton != null)
@@ -40,10 +41,11 @@ public class UIManager : NetworkBehaviour
             }
 
         }
+        // If the client presses restart it will display a message letting both players know that they're ready
         else
         {
             if (_restartButton != null)
-            {               
+            {
                 _restartButton.onClick.AddListener(() =>
                 {
                     UpdatePlayerReadyServerRpc();
@@ -52,7 +54,7 @@ public class UIManager : NetworkBehaviour
                 });
             }
         }
-        
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -67,12 +69,8 @@ public class UIManager : NetworkBehaviour
         ClientWin.Value = 1;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void UpdateSinglePlayerServerRpc()
-    {
-        SinglePlayer.Value = 1;
-    }
     // Accesses Score properties from ScoreManager in order to get the current networked scores
+    // and load the EndScreen scene when one of the players wins
     private void Update()
     {
         if (ScoreManager.Instance != null)
@@ -96,12 +94,8 @@ public class UIManager : NetworkBehaviour
         }
     }
 
+    //
     public void GameOver()
-    {
-        UpdateClientWinServerRpc();
-    }
-
-    public void SinglePlayerGameOver()
     {
         UpdateClientWinServerRpc();
     }

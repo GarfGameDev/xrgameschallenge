@@ -13,11 +13,11 @@ namespace Character
         [SerializeField]
         private InputField _joinCodeInput;
 
-        // Implements functionality for buttons
+        // Implementing the option to launch the game as a host or join as a client
+        // depending on the button clicked on.
+        // Also launches Main scene
         private void Start()
         {
-
-
             _startButton.onClick.AddListener(async() =>
             {
                 if (RelayManager.Instance.IsRelayEnabled)
