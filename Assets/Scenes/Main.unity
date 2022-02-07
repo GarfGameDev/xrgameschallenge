@@ -335,11 +335,14 @@ MonoBehaviour:
   _scoreTextP1: {fileID: 1308059420}
   _scoreTextP2: {fileID: 1386732260}
   _playerReadyText: {fileID: 0}
+  _player2ReadyText: {fileID: 0}
   _restartButton: {fileID: 0}
   _endScreen: {fileID: 0}
   PlayersReady:
     m_InternalValue: 0
   ClientWin:
+    m_InternalValue: 0
+  SinglePlayer:
     m_InternalValue: 0
 --- !u!114 &173381644
 MonoBehaviour:
@@ -1230,6 +1233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uIManager: {fileID: 173381643}
+  _collider: {fileID: 649547623}
 --- !u!65 &649547623
 BoxCollider:
   m_ObjectHideFlags: 0
