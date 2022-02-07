@@ -64,8 +64,6 @@ public class RelayManager : NetworkBehaviour
     {
         _instance = this;
         DontDestroyOnLoad(this.gameObject);
-
-
     }
 
     private void Start()
@@ -116,7 +114,6 @@ public class RelayManager : NetworkBehaviour
         data.JoinCode = await Relay.Instance.GetJoinCodeAsync(data.AllocationID);
         _joinCode = data.JoinCode;
        
-
         relayTransport.SetRelayServerData(data.IPv4Address, data.Port, data.AllocationIDBytes, data.Key, data.ConnectionData);
 
         return data;

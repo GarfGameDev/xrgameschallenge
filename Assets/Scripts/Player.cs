@@ -10,28 +10,28 @@ namespace Character
         [SerializeField]
         private Animator _animator;
 
+        [SerializeField]
         private float _speed = 6.0f;
 
         // Creating two separate instance of player score to store and send info to the ScoreManager
         private int _playerScore;
         private int _playerScore2;
         
-        public bool _isPlayer2 = false;
+        private bool _isPlayer2 = false;
 
         [SerializeField]
         private Vector3 _direction, _velocity;
 
-        public enum playerAnimState
+        public enum PlayerAnimState
         {
             Idle,
             Run,
         }
 
-
         // Create a Network Variable for position that it can be later read or updated on the server
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
         public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
-        public NetworkVariable<playerAnimState> Animstate = new NetworkVariable<playerAnimState>();
+        public NetworkVariable<PlayerAnimState> Animstate = new NetworkVariable<PlayerAnimState>();
 
         // Replace Start() function with an override for the Netcode OnNetworkSpawn() method
         // which is called when the NetworkObject component attached to the Player is spawned in
@@ -65,7 +65,7 @@ namespace Character
                     UpdateClient();              
             }
 
-            if (Animstate.Value == playerAnimState.Run)
+            if (Animstate.Value == PlayerAnimState.Run)
             {
                 _animator.SetFloat("Run", 1);
             }
@@ -167,7 +167,7 @@ namespace Character
         }
 
         [ServerRpc]
-        private void UpdatePlayerStateServerRpc(playerAnimState state)
+        private void UpdatePlayerStateServerRpc(PlayerAnimState state)
         {
             Animstate.Value = state;
         }
@@ -198,15 +198,15 @@ namespace Character
             
             if (verticalInput > 0 || horizontalInput > 0)
             {
-                UpdatePlayerStateServerRpc(playerAnimState.Run);
+                UpdatePlayerStateServerRpc(PlayerAnimState.Run);
             }
             else if (verticalInput < 0 || horizontalInput < 0)
             {
-                UpdatePlayerStateServerRpc(playerAnimState.Run);
+                UpdatePlayerStateServerRpc(PlayerAnimState.Run);
             }
             else
             {
-                UpdatePlayerStateServerRpc(playerAnimState.Idle);
+                UpdatePlayerStateServerRpc(PlayerAnimState.Idle);
             }
         }
     }
