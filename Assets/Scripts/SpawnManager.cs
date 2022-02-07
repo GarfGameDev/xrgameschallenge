@@ -18,7 +18,7 @@ public class SpawnManager : NetworkBehaviour
     private NetworkVariable<int> NumOfLoops = new NetworkVariable<int>();
 
     // Comment out the start in order to remove the random spawning and create a stable build
-/*    void Start()
+    void Start()
     {
         for (int i = 0; i < _pickupArray.Length; i++)
         {
@@ -30,11 +30,8 @@ public class SpawnManager : NetworkBehaviour
             NumOfLoops.Value = 0;
         }
 
-
         StartCoroutine(StartPickupSpawnRoutine());
-
-
-    }*/
+    }
 
     private void Update()
     {

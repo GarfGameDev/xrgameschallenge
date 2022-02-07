@@ -6,7 +6,7 @@ using Unity.Netcode;
 public class UIManager : NetworkBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI _scoreTextP1, _scoreTextP2, _playerReadyText, _player2ReadyText;
+    private TextMeshProUGUI _playerReadyText, _player2ReadyText;
 
     [SerializeField]
     private Button _restartButton;
@@ -21,23 +21,18 @@ public class UIManager : NetworkBehaviour
     private void Start()
     {
         // If the restart button is clicked server side the main scene will be launched when conditions are true
-        if (NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer && _restartButton != null)
         {
-            if (_restartButton != null)
+            _restartButton.onClick.AddListener(() =>
             {
-                _restartButton.onClick.AddListener(() =>
+                if (PlayersReady.Value > 0 || RelayManager.Instance.Player2Connect == 1)
                 {
-                    if (PlayersReady.Value > 0 || RelayManager.Instance.Player2Connect == 1)
-                    {
-                        _endScreen.gameObject.SetActive(false);
-                        NetworkManager.SceneManager.LoadScene("Main", 0);
-                    }
-
-
-                });
-            }
-
+                    _endScreen.gameObject.SetActive(false);
+                    NetworkManager.SceneManager.LoadScene("Main", 0);
+                }
+            });            
         }
+
         // If the client presses restart it will display a message letting both players know that they're ready
         else
         {
@@ -70,17 +65,10 @@ public class UIManager : NetworkBehaviour
     // and load the EndScreen scene when one of the players wins
     private void Update()
     {
-/*        if (ScoreManager.Instance != null)
-        {
-            _scoreTextP1.text = "SCORE: " + ScoreManager.Instance.P1Score.ToString();
-            _scoreTextP2.text = "SCORE: " + ScoreManager.Instance.P2Score.ToString();
-        }*/
-
         if (PlayersReady.Value > 0)
         {
             _playerReadyText.gameObject.SetActive(true);
         }
-
 
         if (NetworkManager.Singleton.IsServer)
         {
@@ -91,7 +79,6 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    //
     public void GameOver()
     {
         UpdateClientWinServerRpc();

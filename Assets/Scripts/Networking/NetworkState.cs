@@ -30,10 +30,7 @@ namespace Character
 
                 NetworkManager.Singleton.StartHost();
                 NetworkManager.SceneManager.LoadScene("Main", 0);
-
-
             });
-
 
             _joinButton.onClick.AddListener(async() =>
             {
@@ -42,23 +39,16 @@ namespace Character
                     await RelayManager.Instance.JoinRelay(_joinCodeInput.text);
                 }
 
-
-                    NetworkManager.Singleton.StartClient();
-                    if (RelayManager.Instance.Player2Connect < 2)
-                    {
-                        NetworkManager.SceneManager.LoadScene("Main", 0);
-                    }
-                    else
-                    {
-                        _lobbyFullText.gameObject.SetActive(true);
-                    }
-
-
-
-
-                });
+                NetworkManager.Singleton.StartClient();
+                if (RelayManager.Instance.Player2Connect < 2)
+                {
+                    NetworkManager.SceneManager.LoadScene("Main", 0);
+                }
+                else
+                {
+                    _lobbyFullText.gameObject.SetActive(true);
+                }
+            });
         }
-
-
     }
 }
