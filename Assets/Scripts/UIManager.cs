@@ -70,11 +70,11 @@ public class UIManager : NetworkBehaviour
     // and load the EndScreen scene when one of the players wins
     private void Update()
     {
-        if (ScoreManager.Instance != null)
+/*        if (ScoreManager.Instance != null)
         {
             _scoreTextP1.text = "SCORE: " + ScoreManager.Instance.P1Score.ToString();
             _scoreTextP2.text = "SCORE: " + ScoreManager.Instance.P2Score.ToString();
-        }
+        }*/
 
         if (PlayersReady.Value > 0)
         {

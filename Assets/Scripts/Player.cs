@@ -80,8 +80,14 @@ namespace Character
         // the networked variables
         private void UpdateScoreManager()
         {
-            ScoreManager.Instance.UpdateScore1ServerRpc(_playerScore);
-            ScoreManager.Instance.UpdateScore2ServerRpc(_playerScore2);
+            if (_isPlayer2 == false)
+            {
+                ScoreManager.Instance.UpdateScore1ServerRpc(_playerScore);
+            }
+            else
+            {               
+                ScoreManager.Instance.UpdateScore2ServerRpc(_playerScore2);
+            }         
         }
 
         // Adds on the score to local player score variables based on the value defined in Pickup
@@ -112,10 +118,6 @@ namespace Character
 
                 if (NetworkManager.Singleton.IsClient && IsOwner)
                 {
-                    // Store the networked variables of both player scores from the ScoreManager
-                    // into local variables
-                    _playerScore = ScoreManager.Instance.P1Score;
-                    _playerScore2 = ScoreManager.Instance.P2Score;
                     UpdateClientScore(pickup);
                 }
 
@@ -155,7 +157,6 @@ namespace Character
         {
             Position.Value = GameObject.Find("SpawnPoint2").transform.position;
             transform.position = Position.Value;
-
         }
 
         [ServerRpc]
