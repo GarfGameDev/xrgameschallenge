@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
@@ -18,7 +17,8 @@ public class SpawnManager : NetworkBehaviour
     private NetworkVariable<int> RandomNumber = new NetworkVariable<int>();
     private NetworkVariable<int> NumOfLoops = new NetworkVariable<int>();
 
-    void Start()
+    // Comment out the start in order to remove the random spawning and create a stable build
+/*    void Start()
     {
         for (int i = 0; i < _pickupArray.Length; i++)
         {
@@ -34,7 +34,7 @@ public class SpawnManager : NetworkBehaviour
         StartCoroutine(StartPickupSpawnRoutine());
 
 
-    }
+    }*/
 
     private void Update()
     {
