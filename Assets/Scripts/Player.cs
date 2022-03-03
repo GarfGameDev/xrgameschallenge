@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Services.Analytics;
+using Unity.RemoteConfig;
 using System.Collections.Generic;
 
 namespace Character
@@ -30,6 +31,21 @@ namespace Character
             Run,
         }
 
+        public struct userAttributes
+        {
+            public bool expansionFlag;
+        }
+
+        public struct appAttributes
+        {
+            // Optionally declare variables for any custom app attributes:
+            public int player1Score;
+            public int player2Score;
+        }
+
+        public int player1Score;
+        public int player2Score;
+
         // Create a Network Variable for position that it can be later read or updated on the server
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
         public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
@@ -39,11 +55,46 @@ namespace Character
         // which is called when the NetworkObject component attached to the Player is spawned in
         public override void OnNetworkSpawn()
         {
+            // Add a listener to apply settings when successfully retrieved:
+            ConfigManager.FetchCompleted += ApplyRemoteSettings;
+
+            // Set the user’s unique ID:
+            ConfigManager.SetCustomUserID("some-user-id");
+
+            // Set the environment ID:
+            ConfigManager.SetEnvironmentID("an-env-id");
+
+            // Fetch configuration setting from the remote service:
+            ConfigManager.FetchConfigs<userAttributes, appAttributes>(new userAttributes(), new appAttributes());
+
             if (IsOwner)
             {
                 SpawnPoint();
             }
+
         }
+
+        void ApplyRemoteSettings(ConfigResponse configResponse)
+        {
+            switch (configResponse.requestOrigin)
+            {
+                case ConfigOrigin.Default:
+                    Debug.Log("No settings loaded this session; using default values.");
+                    break;
+                case ConfigOrigin.Cached:
+                    Debug.Log("No settings loaded this session; using cached values from a previous session.");
+                    break;
+                case ConfigOrigin.Remote:
+                    Debug.Log("New settings loaded this session; update values accordingly.");
+                    _playerScore = ConfigManager.appConfig.GetInt("player1Score");
+                    _playerScore2 = ConfigManager.appConfig.GetInt("player2Score");
+                    ScoreManager.Instance.UpdateScore1ServerRpc(_playerScore);
+                    ScoreManager.Instance.UpdateScore1ServerRpc(_playerScore2);
+
+                    break;
+            }
+        }
+
 
         // Determines which spawn point to use depending if you're the host or not
         public void SpawnPoint()
