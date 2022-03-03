@@ -1,5 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Services.Analytics;
+using System.Collections.Generic;
 
 namespace Character
 {
@@ -133,6 +135,14 @@ namespace Character
                     other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore);                 
                     if (_playerScore > 400)
                     {
+                        Dictionary<string, object> paramaters = new Dictionary<string, object>()
+                        {
+                            { "clientVersion", "v0.1" },
+                            { "platform", "PC_CLIENT" },
+                            { "userScore", _playerScore }
+                        };
+                        Events.CustomData("gameWon", paramaters);
+                        Events.Flush();
                         _playerScore = 0;
                         _playerScore2 = 0;
                     }
@@ -142,6 +152,14 @@ namespace Character
                     other.gameObject.GetComponent<EndZone>().CheckForGameOver(_playerScore2);
                     if (_playerScore2 > 400)
                     {
+                        Dictionary<string, object> paramaters = new Dictionary<string, object>()
+                        {
+                            { "clientVersion", "v0.1" },
+                            { "platform", "PC_CLIENT" },
+                            { "userScore", _playerScore2 }
+                        };
+                        Events.CustomData("gameWon", paramaters);
+                        Events.Flush();
                         _playerScore = 0;
                         _playerScore2 = 0;
                     }
