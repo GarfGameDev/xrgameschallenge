@@ -1,5 +1,4 @@
-using System;
-using System.Threading.Tasks;
+using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.CloudCode;
 using Unity.Services.Core;
@@ -11,6 +10,12 @@ using UnityEngine;
 */
 public class CloudCodeExample : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject _instructionsButton;
+    [SerializeField]
+    private TextMeshProUGUI _instructionsText;
+
+
     /*
      * The Cloud Code parameters passed to the script.
      * The values are made accessible from the script code.
@@ -46,8 +51,10 @@ public class CloudCodeExample : MonoBehaviour
      */
     public async void OnClick()
     {
-        var request = new CloudCodeRequest { name = "Player1" };
+        var request = new CloudCodeRequest { name = "Player" };
         var response = await CloudCode.CallEndpointAsync<CloudCodeResponse>("HelloWorld", request);
+        _instructionsText.text = response.welcomeMessage;
+        _instructionsButton.SetActive(false);
         Debug.Log(response.welcomeMessage);
     }
 

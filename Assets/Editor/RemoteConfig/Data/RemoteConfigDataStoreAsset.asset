@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
   m_Name: RemoteConfigDataStoreAsset
   m_EditorClassIdentifier: 
-  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"6b2498f3-79a8-4523-a088-290b3f52d424\"\r\n   
+  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"cfa56df5-c358-4888-b258-a813bc93b503\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"player1Score\",\r\n      \"type\": \"int\",\r\n     
-    \"value\": 0\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"242244d5-0657-4acd-8c22-28a3ded98f12\"\r\n    },\r\n    \"rs\": {\r\n     
-    \"key\": \"player2Score\",\r\n      \"type\": \"int\",\r\n      \"value\": 0\r\n   
+    \"value\": 100\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
+    \"4f891f9f-4848-403c-91be-f3f95b891e14\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"key\": \"player2Score\",\r\n      \"type\": \"int\",\r\n      \"value\": 200\r\n   
     }\r\n  }\r\n]"
-  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"6b2498f3-79a8-4523-a088-290b3f52d424\"\r\n   
+  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"cfa56df5-c358-4888-b258-a813bc93b503\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"player1Score\",\r\n      \"type\": \"int\",\r\n     
-    \"value\": 0\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"242244d5-0657-4acd-8c22-28a3ded98f12\"\r\n    },\r\n    \"rs\": {\r\n     
-    \"key\": \"player2Score\",\r\n      \"type\": \"int\",\r\n      \"value\": 0\r\n   
+    \"value\": 100\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
+    \"4f891f9f-4848-403c-91be-f3f95b891e14\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"key\": \"player2Score\",\r\n      \"type\": \"int\",\r\n      \"value\": 200\r\n   
     }\r\n  }\r\n]"
   _environments: "[\r\n  {\r\n    \"projectId\": \"3ba26cd8-2c0b-4239-a79f-35b63d8bbe14\",\r\n   
     \"name\": \"production\",\r\n    \"id\": \"a23e0d8c-ed0f-48e2-b836-c098a356db51\",\r\n   

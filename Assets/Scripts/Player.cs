@@ -3,6 +3,8 @@ using Unity.Netcode;
 using Unity.Services.Analytics;
 using Unity.RemoteConfig;
 using System.Collections.Generic;
+using Unity.Services.Economy;
+using Unity.Services.Economy.Model;
 
 namespace Character
 {
@@ -24,6 +26,8 @@ namespace Character
 
         [SerializeField]
         private Vector3 _direction, _velocity;
+
+        string winTokenID = "WINTOKENS";
 
         public enum PlayerAnimState
         {
@@ -51,10 +55,17 @@ namespace Character
         public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
         public NetworkVariable<PlayerAnimState> Animstate = new NetworkVariable<PlayerAnimState>();
 
+        async void Awake()
+        {
+            CurrencyDefinition winTokenDefinition = await Economy.Configuration.GetCurrencyAsync(winTokenID);
+            Debug.Log("The name of the currency is: " + winTokenDefinition.Name);
+        }
+
         // Replace Start() function with an override for the Netcode OnNetworkSpawn() method
         // which is called when the NetworkObject component attached to the Player is spawned in
         public override void OnNetworkSpawn()
         {
+            
             // Add a listener to apply settings when successfully retrieved:
             ConfigManager.FetchCompleted += ApplyRemoteSettings;
 
@@ -88,8 +99,15 @@ namespace Character
                     Debug.Log("New settings loaded this session; update values accordingly.");
                     _playerScore = ConfigManager.appConfig.GetInt("player1Score");
                     _playerScore2 = ConfigManager.appConfig.GetInt("player2Score");
-                    ScoreManager.Instance.UpdateScore1ServerRpc(_playerScore);
-                    ScoreManager.Instance.UpdateScore1ServerRpc(_playerScore2);
+
+                    if (_isPlayer2 == false)
+                    {
+                        ScoreManager.Instance.UpdateScore1ServerRpc(_playerScore);
+                    }
+                    else
+                    {
+                        ScoreManager.Instance.UpdateScore2ServerRpc(_playerScore2);
+                    }
 
                     break;
             }
